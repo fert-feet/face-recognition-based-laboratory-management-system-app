@@ -1,8 +1,7 @@
 <template>
   <view class="container">
-    <template>
       <uni-card
-          style="border-radius: 18px 18px 18px 18px"
+          style="border-radius: 18px 18px 18px 18px;margin-top: 230px"
           class="login-card"
           padding="25px"
           :border="true"
@@ -16,21 +15,18 @@
               placeholder="请输入用户名"
               border="surround"
               v-model="username"
-              @change="handleUsernameChange"
+              @change="handleInputChange"
           ></u-input>
           <u-input
               style="margin-top: 30px"
               placeholder="请输入密码"
               border="surround"
               v-model="password"
-              @change="handleUsernameChange"
+              @change="handleInputChange"
           ></u-input>
           <u-button @click="handleLogin" style="margin-top: 30px" type="primary" shape="circle" text="登录"></u-button>
         </template>
       </uni-card>
-    </template>
-    <template>
-    </template>
   </view>
 </template>
 
@@ -53,21 +49,34 @@ export default {
   },
   methods: {
     // username change
-    handleUsernameChange(username) {
-      console.log('username', username)
+    handleInputChange(inputValue) {
+      console.log('inputValue', inputValue)
     },
     // login
     handleLogin() {
       request({
-        url: "/person/list",
+        url: "/face/login",
         method: 'POST',
-        header: {
-          'content-type': 'application/x-www-form-urlencoded'
-        },
+        // header: {
+        //   'content-type': 'application/x-www-form-urlencoded'
+        // },
         data: {
-          page: 3
+          idNumber: this.username,
+          password: this.password
         }
       }).then(res => {
+        if (res.code === 1008) {
+          uni.showToast({
+            icon:'error',
+            title: res.msg
+          })
+        }
+        if (res.code === 200) {
+          console.log('in')
+          uni.redirectTo({
+            url: '/pages/index/index'
+          })
+        }
       })
     }
 
